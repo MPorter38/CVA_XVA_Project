@@ -3,7 +3,7 @@
 
 from dataclasses import dataclass
 import numpy as np
-import scipy.stats as norm 
+from scipy.stats import norm 
 
 @dataclass
 class Exposure:
@@ -20,39 +20,44 @@ class Exposure:
             raise ValueError("LGD must be between 0 and 1")
         if self.ead < 0:
             raise ValueError("EAD must be non-negative")
-        if self.pd == 1 and not (0 <= self.beel <= 1):
-            raise ValueError("BEEL must be between 0 and 1 if PD is 1")
+        if not (0 <= self.beel <= 1):
+            raise ValueError("BEEL must be between 0 and 1")
         if self.M < 0 or self.M > 5:
             raise ValueError("Maturity must be non-negative and less than or equal to 5 years")
 
 class IRBCalculator:
     def __init__(self, exposure: Exposure):
         self.exposure = exposure
+        if self.exposure.pd < 0.05:
+            self.pd_floored = 0.05
+        else:
+            self.pd_floored = self.exposure.pd
     
     def asset_correlation(self):
         # Calculate asset correlation based on PD for Corporates 
-        if self.pd < 1:
-            weight = (1 - np.exp(-50 * self.pd)) / (1 - np.exp(-50))
+        if self.pd_floored < 1:
+            weight = (1 - np.exp(-50 * self.pd_floored)) / (1 - np.exp(-50))
             return 0.12 * weight + 0.24 * (1 - weight)
     
     def maturity_adjustment(self):
         # Calculate maturity adjustment based on PD for Coporates 
-        if self.pd < 1:
-            b = (0.11852 - 0.05478 * np.log(self.pd)) ** 2
-            return (1+(self.M-2.5)*b) / (1-1.5*b)
+        if self.pd_floored < 1:
+            b = (0.11852 - 0.05478 * np.log(self.pd_floored)) ** 2
+            return (1+(self.exposure.M-2.5)*b) / (1-1.5*b)
             
     def capital_requirement(self):
         # Calculate capital requirement using the Basel formula
-        if self.pd < 1:
+        # Assume no turnover adjustment
+        if self.pd_floored < 1:
             R = self.asset_correlation()
-            barrier = (1/np.sqrt(1-R)) * norm.ppf(self.pd) + np.sqrt(R/(1-R)) * norm.ppf(0.999)
-            return self.lgd * (norm.cdf(barrier) - self.pd)
+            barrier = (1/np.sqrt(1-R)) * norm.ppf(self.pd_floored) + np.sqrt(R/(1-R)) * norm.ppf(0.999)
+            return self.exposure.lgd * (norm.cdf(barrier) - self.pd_floored)
         
     def rwa(self):
         # Calculate Risk-Weighted Assets (RWA)
-        if self.pd < 1:
+        if self.pd_floored < 1:
             K = self.capital_requirement()
             M = self.maturity_adjustment()
-            return 12.5 * K * self.ead * M
-        if self.pd == 1:
-            return max(0, 12.5 * (self.lgd - self.beel)) * self.ead
+            return 12.5 * K * self.exposure.ead * M
+        if self.pd_floored == 1:
+            return max(0, 12.5 * (self.exposure.lgd - self.exposure.beel)) * self.exposure.ead
