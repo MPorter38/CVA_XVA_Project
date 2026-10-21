@@ -1,7 +1,7 @@
 # Test IRB RWA Calculator Class 
 
 # Setup
-from IRB_RWA_Calculator_Class import Exposure, IRBCalculator
+from src.irb import Exposure, IRBCalculator
 import pytest
 from pytest import approx
 
