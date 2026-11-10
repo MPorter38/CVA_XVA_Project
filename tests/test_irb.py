@@ -12,8 +12,8 @@ def call(calc, **overrides):
     args = {**BASE, **overrides}
     return calc.rwa(args["pd"], args["lgd"], args["ead"], args["beel"], args["M"])
 
-@pytest.fixture
-def calc():
+@pytest.fixture 
+def calc(): 
     return IRBCalculator()
 
 # Test that scalar inputs return a scalar output
