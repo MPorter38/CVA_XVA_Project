@@ -4,8 +4,6 @@
 import numpy as np
 from scipy.stats import norm 
 
-
-
 class IRBCalculator:
     
     pd_floor = 0.05 
