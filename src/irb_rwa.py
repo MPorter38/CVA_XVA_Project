@@ -31,7 +31,8 @@ class IRBCalculator:
             raise ValueError("BEEL must be less than or equal to 1")        
         if np.any((M > 5) | (M < 1)):
             raise ValueError("Maturity must be between 1 and 5 years")
-        np.broadcast_arrays(pd, lgd, ead, beel, M) #check if shapes are compatible 
+        pd, lgd, ead, beel, M =  np.broadcast_arrays(pd, lgd, ead, beel, M) #check if shapes are compatible 
+        pd, lgd, ead, beel, M = (np.atleast_1d(a) for a in (pd, lgd, ead, beel, M))
         return np.maximum(pd,self.pd_floor), lgd, ead, beel, M  
 
     def asset_correlation(self,pd):
