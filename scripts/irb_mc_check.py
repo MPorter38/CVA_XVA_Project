@@ -13,10 +13,10 @@
 
 # Libraries
 from matplotlib.pylab import seed
-from irb_rwa import IRBCalculator
+from irb_rwa.irb import IRBCalculator
 import numpy as np
 from matplotlib import pyplot as plt
-from simulation import simulate_loss
+from irb_rwa.simulation import simulate_loss
 
 def run_many(pd, lgd, r, n, n_runs, seed_seq):
     """ n_runs independent estimates of K, each using N draws"""
@@ -64,7 +64,7 @@ def main():
     ax.set_xlabel("Simulated K"); ax.set_ylabel("Runs")
     ax.set_title(f"Simulated K over {n_runs} runs, N={n_big:,}")
     ax.legend()
-    fig.savefig("k_distribution.png", dpi=150, bbox_inches='tight')
+    fig.savefig("results/k_distribution.png", dpi=150, bbox_inches='tight')
     
     # Plot error vs N, log-log
     sds = np.array([results[n].std(ddof=1) for n in Ns])
@@ -74,7 +74,7 @@ def main():
     ax.loglog(Ns, sds[0] * np.sqrt(Ns[0] / np.array(Ns)), "--", label="1/sqrt(N) reference")
     ax.set_xlabel("N"); ax.set_ylabel("Std of K estimate")
     ax.legend()
-    fig.savefig("convergence.png", dpi=150, bbox_inches='tight')
+    fig.savefig("results/convergence.png", dpi=150, bbox_inches='tight')
     
 if __name__ == "__main__":
     main()

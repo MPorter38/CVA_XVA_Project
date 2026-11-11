@@ -1,7 +1,7 @@
 # Test IRB RWA Calculator Class 
 
 # Setup
-from src.irb_rwa import IRBCalculator
+from irb_rwa.irb import IRBCalculator
 import pytest
 from pytest import approx
 import numpy as np
