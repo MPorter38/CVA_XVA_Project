@@ -1,7 +1,7 @@
 # Test function in simulation.py
 
 import pytest
-from src.simulation import simulate_loss
+from irb_rwa.simulation import simulate_loss
 import numpy as np
 
 # Setup a random number generator for reproducibility
@@ -17,7 +17,7 @@ def test_loss_is_between_zero_and_lgd(rng, pd, r):
     assert 0 <= loss <= 0.45
 
 # Test that simulated loss is the same for the same seed and parameters and different for different seeds
-def test_same_seed_gives_same_result(rng):
+def test_same_seed_gives_same_result():
     a = simulate_loss(0.02, 0.45, 0.1, N=1000, generator=np.random.default_rng(1))
     b = simulate_loss(0.02, 0.45, 0.1, N=1000, generator=np.random.default_rng(1))
     assert a == b
