@@ -29,21 +29,37 @@ Uses synthetic data only.
 
 ## Project layout
 cva_xva_project/
+
 ├── pyproject.toml
+
 ├── requirements.txt
+
 ├── README.md
+
 ├── .gitignore
+
 ├── pytest.ini
+
 ├── src/
+
 │   └── irb_rwa/
+
 │       ├── __init__.py
+
 │       ├── irb.py              # IRBCalculator
+
 │       └── simulation.py       # simulate_loss
+
 ├── scripts/
+
 │   └── irb_mc_check.py             # convergence study and plots
+
 └── tests/
+
     ├── test_irb.py
+    
     └── test_simulation.py
+
 
 ## Status and limitations
 Infinitely granular portfolio; no CVA yet.
